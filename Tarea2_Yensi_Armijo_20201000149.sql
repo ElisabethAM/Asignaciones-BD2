@@ -6,7 +6,19 @@ DECLARE
     Apellido2 varchar2(50):= UPPER('maradiaga');
     
 BEGIN
-    dbms_output.put_line(SUBSTR(Nombre,1,1)||'.'||SUBSTR(Apellido1,1,1)||'.'||SUBSTR(Apellido2,1,1)||'.');
-    --dbms_output.put_line(Nombre||Apellido1||Apellido2);
-    --dbms_output.put_line(SUBSTR(Nombre,1,1)||'.');
+    dbms_output.put_line(SUBSTR(Nombre,1,1)||'.'||SUBSTR(Apellido1,1,1)||'.'||SUBSTR(Apellido2,1,1)||'.');--Impresion del resultado con las variables concatenadad
+END;
+
+--EJERCICIO2: PAR O IMPAR
+SET SERVEROUTPUT ON
+DECLARE
+    Numero number:=-5;
+BEGIN
+    IF
+        MOD(Numero,2)=0 --dividiendo el numero entre 2 y evaluando el residuo
+    THEN
+         dbms_output.put_line('El valor del número es Par');
+    ELSE
+        dbms_output.put_line('El valor del número es Impar');
+    END IF;
 END;
