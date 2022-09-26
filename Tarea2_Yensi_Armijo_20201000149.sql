@@ -33,3 +33,13 @@ BEGIN
 END;
 
 --EJERCICIO4:
+SET SERVEROUTPUT ON
+DECLARE
+    idDepartamento departments.department_id%type:=50;--variable del departamento
+    nombreDep departments.department_name%type;
+    cantidadEmp number;
+BEGIN
+    SELECT department_name INTO nombreDep FROM departments WHERE department_id= idDepartamento;--obteniendo el nombre del departamento
+    SELECT COUNT(employee_id) INTO cantidadEmp FROM employees WHERE department_id= iddepartamento;--obteniendo la cantidad de empleados
+    dbms_output.put_line('El nombre del departamento es '|| nombreDep||' con '||cantidadEmp ||' empleados' );
+END;
