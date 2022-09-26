@@ -22,3 +22,14 @@ BEGIN
         dbms_output.put_line('El valor del número es Impar');
     END IF;
 END;
+
+--EJERCICIO3: SALARIO MAXIMO DEL DEP 100
+SET SERVEROUTPUT ON
+DECLARE
+     salario_maximo employees.salary%type;--copiando el tipo de dato en la nueva variable
+BEGIN
+   SELECT MAX(salary) INTO salario_maximo FROM Employees WHERE department_id=100;--consulta para filtrar el empleado deseado
+   dbms_output.put_line('El salario máximo del departamento 100 es: '|| salario_maximo);--resultado
+END;
+
+--EJERCICIO4:
