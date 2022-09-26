@@ -1,11 +1,3 @@
---------------------	CONSIDERACIONES 	-------------------------------
---se realizÛ un mapeado del diagrama ER dado en la tarea a uno relacional (disponible en el repositorio como una imagen)
---Ejecutar cada paso en orden: 1 , 2 , 3 , 4 , 5 Y 6
---son 5 tablas en total: Hotel, Cliente, Aerolinea, Boleto y Hotel_Cliente
---se realizaron inserts respectivos para cada tabla para demostrar la funcionalidad de la base de datos
---las restricciones detalladas en la tarea est·n acompaÒadas por un comentario que las distingue en el codigo de creacion de tablas( paso 3)
---en el caso de las PK se asigna un tipo de dato NVARCHAR de 10 caracteres m·ximo a excepcion de la PK Clientes
---se crearon primero las tablas que no tienen referencias hacia otras y posteriormente, las tablas con LLaves for·neas
 
 -------------------	CREACION DE LA BASE (PASO1)	-------------------------------
 CREATE DATABASE VIAJES
@@ -54,7 +46,7 @@ CREATE TABLE Boleto
 	CONSTRAINT PK_Boleto	PRIMARY KEY (codigoBoleto),
 	CONSTRAINT FK_Boleto1	FOREIGN KEY (idCliente) REFERENCES Cliente(idCliente),
 	CONSTRAINT FK_Boleto2	FOREIGN KEY (codigoAerolinea) REFERENCES Aerolinea(codigoAerolinea),
-	CONSTRAINT CHK_Boleto1	CHECK (destino= 'MÈxico' or destino= 'Guatemala' or destino= 'Panam·') ---RESTRICCION DE LA TAREA----
+	CONSTRAINT CHK_Boleto1	CHECK (destino= 'M√©xico' or destino= 'Guatemala' or destino= 'Panam√°') ---RESTRICCION DE LA TAREA----
 )
 
 CREATE TABLE Hotel_Cliente
@@ -98,10 +90,10 @@ INSERT INTO aerolinea VALUES ('004',20.0)
 INSERT INTO aerolinea VALUES ('005',30.5)
 --INSERT INTO aerolinea VALUES ('006',5.7) PRUEBA DE ERROR PARA EL DESCUENTO DE LA AEROLINEA
 
-INSERT INTO Boleto VALUES ('001','102','14-09-2022','MÈxico','0801 2000 0000','003')
-INSERT INTO Boleto VALUES ('002','203','05-05-2021','Panam·','0715 2002 0030','001')
-INSERT INTO Boleto VALUES ('003','120','23-08-2020','MÈxico','0801 1999 0000','002')
-INSERT INTO Boleto VALUES ('004','056','04-04-2021','Panam·','0801 1970 0230','004')
+INSERT INTO Boleto VALUES ('001','102','14-09-2022','M√©xico','0801 2000 0000','003')
+INSERT INTO Boleto VALUES ('002','203','05-05-2021','Panam√°','0715 2002 0030','001')
+INSERT INTO Boleto VALUES ('003','120','23-08-2020','M√©xico','0801 1999 0000','002')
+INSERT INTO Boleto VALUES ('004','056','04-04-2021','Panam√°','0801 1970 0230','004')
 INSERT INTO Boleto VALUES ('005','391','07-02-2022','Guatemala','0801 1989 0000','005')
 --INSERT INTO Boleto VALUES ('006','901','07-02-2022','Honduras','0801 1989 0000','005') PRUEBA DE ERROR PARA DESTINO
 
