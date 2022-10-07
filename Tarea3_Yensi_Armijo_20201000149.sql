@@ -29,7 +29,7 @@ BEGIN
     CLOSE c_num;
 END;
 
---USANDO UNA VARIABLE CONTADORA(tambiï¿½n funciona)
+--USANDO UNA VARIABLE CONTADORA(tambien funciona)
 SET SERVEROUTPUT ON
 DECLARE
     cantidadEmp NUMBER:=0;--CONTADOR
@@ -62,7 +62,7 @@ SELECT EMPLOYEE_ID, SALARY FROM EMPLOYEES_COPIA WHERE EMPLOYEE_ID=132;--SALARIO 
 SELECT EMPLOYEE_ID, SALARY FROM EMPLOYEES_COPIA WHERE EMPLOYEE_ID=100;--SALARIO MAS ALTO (24000) CAMBIA A 28800 (0.20%)
 
 ------------------------------------------------------------------------  FUNCIONES    ----------------------------------------------------------------------------
-                            --A) FUNCION CREAR REGIïON(falta implementarle los errores, solo tiene una excepcion global por el momento)
+                            --A) FUNCION CREAR REGION
 CREATE OR REPLACE FUNCTION CREAR_REGION
     (nombreRegion IN REGIONS.REGION_NAME%TYPE)
 RETURN NUMBER
@@ -70,9 +70,6 @@ IS
     codigoAlto NUMBER;
     codigoRegion NUMBER;
 BEGIN
-    --IF nombreRegion='' THEN
-        -- RAISE_APPLICATION_ERROR(-20000,'NO SE PUEDE INGRESAR UNA REGION VACIA');
-    --END IF;
     SELECT MAX(REGION_ID) INTO codigoAlto FROM REGIONS;
     codigoRegion:= codigoAlto+1;
     INSERT INTO REGIONS VALUES (codigoRegion,nombreRegion);
@@ -84,15 +81,15 @@ BEGIN
 END;
 
 --DELETE  FROM REGIONS WHERE REGION_ID>4;
---LLAMADO A LA FUNCIïON CREADA :
+--LLAMADO A LA FUNCION CREADA :
 SET SERVEROUTPUT ON
 DECLARE
     Region REGIONS.REGION_NAME%type;
     Resultado NUMBER;
 begin
-    Region:='Wakanda';
+    Region:='Andorrita';
     Resultado:= CREAR_REGION(Region);
-    DBMS_OUTPUT.PUT_LINE('El nuevo cOdigo generado es: '||Resultado);
+    DBMS_OUTPUT.PUT_LINE('El nuevo codigo generado es: '||Resultado);
 end;
 
 ------------------------------------------------------------------------  PROCEDIMIENTOS    ------------------------------------------------------------------------
@@ -189,4 +186,35 @@ INSERT INTO DEPARTMENTS VALUES(290, 'test2',NULL,NULL);
 
 --DELETE FROM DEPARTMENTS WHERE DEPARTMENT_ID > 270;
 
-                                                                    --B) TRIGGER BEFORE INSERT
+                                                                    --B) TRIGGER AUDITORIA
+/*CREATE TABLE AUDITORIA ( 
+USUARIO         VARCHAR(50), 
+FECHA           DATE, 
+SALARIO_ANTIGUO NUMBER, 
+SALARIO_NUEVO   NUMBER);*/
+
+CREATE OR REPLACE TRIGGER TR_AUDITORIA
+BEFORE INSERT ON REGIONS
+FOR EACH ROW
+BEGIN
+    INSERT INTO AUDITORIA VALUES (USER,SYSDATE,0,0 );
+END;
+
+--insert de prueba:
+INSERT INTO REGIONS VALUES(5,'Luna de Pluton');
+
+                                                                    --C) TRIGGER EMPLOYEES
+CREATE OR REPLACE TRIGGER TR_EMPLOYEES
+BEFORE UPDATE OF  SALARY ON EMPLOYEES
+FOR EACH ROW
+BEGIN
+    IF :NEW.SALARY < :OLD.SALARY THEN
+        RAISE_APPLICATION_ERROR (-20777,'NO SE PUEDE MODIFICAR EL SALARIO CON UN VALOR MENOR');
+    END IF;
+    IF :NEW.SALARY > :OLD.SALARY THEN
+        INSERT INTO AUDITORIA VALUES (USER,SYSDATE,:OLD.SALARY,:NEW.SALARY );
+    END IF;
+END;
+
+--update de prueba:
+UPDATE EMPLOYEES SET SALARY= 10000 WHERE EMPLOYEE_ID= 111;--SALARIO ACTUAL 7700
