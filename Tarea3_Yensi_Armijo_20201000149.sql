@@ -1,5 +1,5 @@
                                                                          /*TAREA #3*/
-                                      -------------------------------  BLOQUES ANï¿½NIMOS    ---------------------------
+------------------------------------------------------------------------ BLOQUES ANONIMOS   ------------------------------------------------------------------------
                                                     --A)NOMBRE Y SUELDO DE EMPLEADOS POR MEDIO DE CURSOR:
 
 SET SERVEROUTPUT ON
@@ -8,7 +8,7 @@ DECLARE
 BEGIN
     DBMS_OUTPUT.PUT_LINE('NOMBRE      '  || 'SALARIO' );
     FOR i IN c_empleados LOOP
-        IF i.FIRST_NAME= 'Peter' AND i.LAST_NAME='Tucker' THEN --comprobaciï¿½n del nombre del jefe
+        IF i.FIRST_NAME= 'Peter' AND i.LAST_NAME='Tucker' THEN --comprobacion del nombre del jefe
             RAISE_APPLICATION_ERROR(-20000,'NO SE PUEDE VISUALIZAR EL SUELDO DEL JEFE');
         END IF;
         DBMS_OUTPUT.PUT_LINE(i.FIRST_NAME || i.LAST_NAME||'----->'|| i.SALARY );
@@ -61,8 +61,8 @@ END;
 SELECT EMPLOYEE_ID, SALARY FROM EMPLOYEES_COPIA WHERE EMPLOYEE_ID=132;--SALARIO MAS BAJO (2100 )CAMBIA A 2730 (0.30%)
 SELECT EMPLOYEE_ID, SALARY FROM EMPLOYEES_COPIA WHERE EMPLOYEE_ID=100;--SALARIO MAS ALTO (24000) CAMBIA A 28800 (0.20%)
 
-                                            -------------------------------  FUNCIONES    ---------------------------
-                            --A) FUNCION CREAR REGIï¿½N(falta implementarle los errores, solo tiene una excepcion global por el momento)
+------------------------------------------------------------------------  FUNCIONES    ----------------------------------------------------------------------------
+                            --A) FUNCION CREAR REGIïON(falta implementarle los errores, solo tiene una excepcion global por el momento)
 CREATE OR REPLACE FUNCTION CREAR_REGION
     (nombreRegion IN REGIONS.REGION_NAME%TYPE)
 RETURN NUMBER
@@ -84,7 +84,7 @@ BEGIN
 END;
 
 --DELETE  FROM REGIONS WHERE REGION_ID>4;
---LLAMADO A LA FUNCIï¿½N CREADA :
+--LLAMADO A LA FUNCIïON CREADA :
 SET SERVEROUTPUT ON
 DECLARE
     Region REGIONS.REGION_NAME%type;
@@ -92,10 +92,10 @@ DECLARE
 begin
     Region:='Wakanda';
     Resultado:= CREAR_REGION(Region);
-    DBMS_OUTPUT.PUT_LINE('El nuevo cï¿½digo generado es: '||Resultado);
+    DBMS_OUTPUT.PUT_LINE('El nuevo cOdigo generado es: '||Resultado);
 end;
 
-                                        -------------------------------  PROCEDIMIENTOS    ---------------------------
+------------------------------------------------------------------------  PROCEDIMIENTOS    ------------------------------------------------------------------------
                                                                         --A) CALCULADORA
 CREATE OR REPLACE PROCEDURE CALCULADORA
 (operacion IN VARCHAR2,
@@ -160,3 +160,33 @@ END;
     BEGIN
         INSERTS_EMPLOYEE;
     END;
+    
+------------------------------------------------------------------------  TRIGGERS    ----------------------------------------------------------------------------
+                                                                --A) TRIGGER BEFORE INSERT
+CREATE OR REPLACE TRIGGER TR_EMPLEADOS
+BEFORE INSERT ON DEPARTMENTS
+FOR EACH ROW
+    DECLARE
+        CURSOR C_DEPA IS SELECT * FROM DEPARTMENTS;
+    BEGIN
+        FOR i IN C_DEPA LOOP
+            IF i.DEPARTMENT_ID= :NEW.DEPARTMENT_ID THEN 
+                RAISE_APPLICATION_ERROR(-20011,'INGRESE UN ID DE DEPARTAMENTO QUE NO EXISTA EN LA TABLA');
+            END IF;
+        END LOOP;
+        IF :NEW.LOCATION_ID IS NULL THEN
+            :NEW.LOCATION_ID := 1700;
+        END IF;
+        IF :NEW.MANAGER_ID IS NULL THEN
+            :NEW.MANAGER_ID:= 200;
+        END IF;
+    END;
+    
+--insert de prueba con id repetido
+INSERT INTO DEPARTMENTS VALUES(270, 'test',5,5);
+--insert correcto pero con lacation y manager nulos 
+INSERT INTO DEPARTMENTS VALUES(290, 'test2',NULL,NULL);
+
+--DELETE FROM DEPARTMENTS WHERE DEPARTMENT_ID > 270;
+
+                                                                    --B) TRIGGER BEFORE INSERT
